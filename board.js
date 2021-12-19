@@ -14,8 +14,6 @@ Board = (function(){
         if(_players[0].name != undefined) {
             const keepSamePlayers = confirm("Would you like to keep the same players?");
             if(keepSamePlayers) {
-                console.log(_players[1]);
-                console.log(_players[1].hasTurn);
                 if(_players[1].hasTurn){
                     _players.forEach((player) => player.toggleTurn());
                 }
@@ -31,15 +29,17 @@ Board = (function(){
 
     const _createPlayers = () => {
         _players.splice(0,2);
-        const nameOne = prompt("Player One, what is your name?");
-        const nameTwo = prompt("Player Two, what is your name?");
+        const nameOne = prompt("Player One, what is your name? (Type computer to play a really stupid computer)") || "McLovin";
+        const nameTwo = prompt("Player Two, what is your name? (Type computer to play a really stupid computer)") || "Cher";
         const playerOne = Player(nameOne, "X", true, true);
         const playerTwo = Player(nameTwo, "O", false, true);
+        if(nameOne === 'computer') playerOne.isHuman = false;
+        if(nameTwo === 'computer') playerTwo.isHuman = false;
         _players.splice(0,2, playerOne, playerTwo);
-        console.log(_players);
     };
 
     const alterSquare = (e) => {
+        if(e.path[0].innerHTML != '') return;
         let currentPlayer = {};
         for (player in _players){
             if (_players[player].hasTurn === true) currentPlayer = _players[player]
@@ -47,7 +47,7 @@ Board = (function(){
         if(currentPlayer.isHuman){    
             _boardState.splice(e.path[0].id, 1, currentPlayer.symbol)
         } else {
-            //insert Computer Logic Here
+            _randomAI(currentPlayer);
         }
         _updateBoard();
         if(winCheck(currentPlayer)) return;
@@ -113,7 +113,7 @@ Board = (function(){
             }
         };
         if (drawCount === 9){
-            drawEvent();
+            _drawEvent();
             return true;
         };
 
@@ -127,6 +127,32 @@ Board = (function(){
         },10)
 
     };
+
+    const _drawEvent = () => {
+        setTimeout(() => {
+            alert(`It's a draw.`);
+            if(!(confirm("Would you like to start a new game?"))) return;
+            init();
+        },10)
+    };
+
+
+    //Move to AI Module
+    const _randomAI = (currentPlayer) => {
+        let pick = Math.floor(Math.random() * 9);
+        while(_boardState[pick] != ''){
+            pick = Math.floor(Math.random() * 9);
+        }
+        _boardState.splice(pick, 1, currentPlayer.symbol);
+    };
+
+    const _minimax = (currentPlayer) => {
+        let pick = Math.floor(Math.random() * 9);
+        while(_boardState[pick] != ''){
+            pick = Math.floor(Math.random() * 9);
+        }
+        _boardState.splice(pick, 1, currentPlayer.symbol);
+    }
     
     return {alterSquare, init, winCheck};
 })();

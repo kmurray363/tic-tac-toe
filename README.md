@@ -1,14 +1,14 @@
 # tic-tac-toe
 A simple two person tic-tac-toe game! Click on the squares to place a symbol. 
 
-KNOWN BUGS:
+UPCOMING BUGFIXES:
 
--When starting a new game, O's always go first instead of Xs
--The game does not stop in the event of a draw
+-For the computer to take a turn you must click an empty square.
 
 FUTURE FEATURES:
 
--New Game button
--Add GUI to replace prompt windows
--More CSS styling
--AI opponent option
+-Add GUI to replace prompts, alerts and confirms
+-Add harder AI
+-Animations
+
+
