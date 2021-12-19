@@ -6,20 +6,20 @@ Board = (function(){
 
     //cache DOM
     const $squares = document.querySelectorAll(".square");
+    const $playerOneName = document.getElementById("player-one-name");
+    const $playerTwoName = document.getElementById("player-two-name");
+    const $playerOneComp = document.getElementById("player-one-comp");
+    const $playerTwoComp = document.getElementById("player-two-comp");
+    const $newGameButton = document.getElementById("new-game-btn");
+
 
     //start Game
     const init = () => {
         _clearBoard();
         _updateBoard();
-        if(_players[0].name != undefined) {
-            const keepSamePlayers = confirm("Would you like to keep the same players?");
-            if(keepSamePlayers) {
-                if(_players[1].hasTurn){
-                    _players.forEach((player) => player.toggleTurn());
-                }
-                return;
-            };
-        };
+        if(_players[1].hasTurn){
+            _players.forEach((player) => player.toggleTurn());
+        }
         _createPlayers();
         if(_firstTime){
             _bindEvents();
@@ -29,12 +29,12 @@ Board = (function(){
 
     const _createPlayers = () => {
         _players.splice(0,2);
-        const nameOne = prompt("Player One, what is your name? (Type computer to play a really stupid computer)") || "McLovin";
-        const nameTwo = prompt("Player Two, what is your name? (Type computer to play a really stupid computer)") || "Cher";
+        const nameOne = $playerOneName.value || "X";
+        const nameTwo = $playerTwoName.value || "O";
         const playerOne = Player(nameOne, "X", true, true);
         const playerTwo = Player(nameTwo, "O", false, true);
-        if(nameOne === 'computer') playerOne.isHuman = false;
-        if(nameTwo === 'computer') playerTwo.isHuman = false;
+        if($playerOneComp.checked) playerOne.isHuman = false;
+        if($playerTwoComp.checked) playerTwo.isHuman = false;
         _players.splice(0,2, playerOne, playerTwo);
     };
 
@@ -70,9 +70,12 @@ Board = (function(){
     }
 
     const _bindEvents = () => {
+        //Adds listeners to allow symbols to be placed on board and check for wins
         for(let ele = 0; ele < $squares.length; ele++){
             $squares[ele].addEventListener("click", alterSquare)
         }
+
+        $newGameButton.addEventListener("click", init);
     }
 
     const winCheck = (currentPlayer) => { 
@@ -122,8 +125,6 @@ Board = (function(){
     const _winEvent = (currentPlayer) => {
         setTimeout(() => {
             alert(`${currentPlayer.name} has won!`);
-            if(!(confirm("Would you like to start a new game?"))) return;
-            init();
         },10)
 
     };
@@ -131,8 +132,6 @@ Board = (function(){
     const _drawEvent = () => {
         setTimeout(() => {
             alert(`It's a draw.`);
-            if(!(confirm("Would you like to start a new game?"))) return;
-            init();
         },10)
     };
 
